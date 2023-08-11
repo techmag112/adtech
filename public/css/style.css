@@ -1,0 +1,166 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.body {
+  margin: 0;
+  height: 100%;
+}
+
+.my_header {
+  display: inline-block;
+}
+
+ul.hr {
+  margin: 0; 
+  padding: 4px; 
+}
+
+ul.hr li {
+  display: inline; 
+  margin-right: 5px; 
+  padding: 3px; 
+}
+
+h1 {
+  display: inline;
+  margin-right: 400px; 
+}
+
+.table_container {
+  width: 100%;
+  height: 120%;
+  overflow-x: scroll;
+}
+
+.scroll-table-body {
+	height: 300px;
+	overflow-x: auto;
+	margin-top: 0px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #eee;
+}
+
+.scroll-table table {
+	width:90%;
+	table-layout: fixed;
+	border: none;
+}
+
+.scroll-table thead th {
+	font-weight: bold;
+	text-align: left;
+	border: none;
+	padding: 10px 15px;
+	font-size: 14px;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.scroll-table tbody td {
+	text-align: left;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	padding: 10px 15px;
+	font-size: 14px;
+	vertical-align: top;
+}
+
+/* Стили для скролла */
+::-webkit-scrollbar {
+	width: 6px;
+} 
+
+::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+} 
+
+::-webkit-scrollbar-thumb {
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+}
+
+.overlay__shadow{
+	position: fixed;
+	border:none;
+	display: block;
+	width: 100%;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 50;
+	opacity: 0;
+	transition: opacity 0.15s ease;
+	background-color: black;
+  }
+
+  /* активная подложка */
+  .overlay__shadow--show{
+	pointer-events: auto;
+	opacity: 0.6;
+  }
+
+  .layerAddOffer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 520px;
+	height: 520px;
+	padding: 15px;
+  	background: white;
+	transform: translateX(-100%);
+	transition: transform 0s; 
+  	z-index: 155;
+  	display: flex;
+  	flex-direction: column;
+  	justify-content: flex-start;
+  	align-items: center;
+  	border-radius: 10px;
+}
+
+.layerAddOffer.active {
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	transform: translate(-50%, -50%);
+}
+
+
+input:invalid {
+	border: 2px solid red;
+}
+
+input:valid {
+	border: 2px solid green;
+  
+}
+
+.layerAddOffer2 {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 520px;
+	height: 200px;
+	padding: 15px;
+  	background: white;
+	transform: translateX(-100%);
+	transition: transform 0s; 
+  	z-index: 155;
+  	display: flex;
+  	flex-direction: column;
+  	justify-content: flex-start;
+  	align-items: center;
+  	border-radius: 10px;
+	text-align: center;
+}
+
+.layerAddOffer2.active {
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	transform: translate(-50%, -50%);
+}
