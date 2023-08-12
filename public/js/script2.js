@@ -17,18 +17,6 @@ __webpack_require__.r(__webpack_exports__);
 
 const getState = (state) => {
 
-
-    //state.offerList[0] = {'id': 1, 'name': 'Фитнес', 'sum': 2.50, 'url': 'www.fitnes.ru', 'keywords': 'фитнес спорт зож', 'count': 2, 'status':1};
-    //state.offerList[1] = {'id': 2, 'name': 'Магазин Корзинка', 'sum': 1.00, 'url': 'www.korz.ru', 'keywords': 'продукты еда', 'count': 1, 'status':-1};
-    //state.offerList[2] = {'id': 3, 'name': 'Кофе доставка', 'sum': 1.50, 'url': 'www.coffe.ru', 'keywords': 'кофе еда', 'count': 4, 'status':null};
-    //state.offerList[3] = {'id': 4, 'name': 'Грузчики 24*7', 'sum': 1.90, 'url': 'www.gruz555.com', 'keywords': 'груз доставка', 'count': 2, 'status':1};
-    //state.yearData1 = [1080, 1116, 1260, 1280, 1320, 1466, 1380, 1420, 1480, 1540, 1520, 1660];
-    //state.yearData2 = [32, 36, 43, 46, 52, 56, 51, 58, 54, 62, 57, 64];
-    state.monthData1 = [12, 16, 18, 12, 14, 22, 24, 18, 22, 16, 12, 16, 18, 12, 14, 22, 24, 18, 22, 16, 12, 16, 18, 12, 14, 22, 24, 18, 22, 16, 22];
-    state.monthData2 = [3, 5, 6, 3, 4, 8, 10, 6, 8, 5, 3, 5, 6, 3, 4, 8, 10, 6, 8, 5, 3, 5, 6, 3, 4, 8, 10, 6, 8, 5, 10];
-    state.dayData1 = [1, 0, 0, 0, 0, 1, 2, 2, 1, 2, 1, 2, 3, 3, 2, 4, 3, 7, 8, 6, 8, 7, 6, 7];
-    state.dayData2 = [1, 0, 0, 0, 0, 1, 2, 2, 1, 2, 1, 2, 3, 3, 2, 4, 3, 7, 8, 6, 8, 7, 6, 7];
-
     axios.get('/get/getSubcrList').then(res => {
         state.offerList = res.data;
         console.log('state.offerList', state.offerList);
@@ -299,13 +287,37 @@ const renderOffers = (state) => {
           });
     }
 
+    function getReferalURL(id) {
+        axios({
+            method: 'post',
+            url: '/post/getCurrentOrder',
+            headers: {
+            "Content-type": "application/json; charset=UTF-8"
+          },
+          data:  {"id": id}
+        })
+           .then(res => {
+            state.url = res.data;
+            console.log('state.url', res.data);
+           })
+           .then(() => {
+                console.log('Данные для урл получены!');
+                    codeURL = '<h3>Код ссылки для вставки на сайт -<br/><b>http://' + window.location.hostname + '/ref=' + state.url[0]['master_id'] + ',off=' + state.url[0]['offer_id'] + '</b></h3>';
+                    document.querySelector('#insertCode').innerHTML = codeURL;
+            })
+            .catch(function(error) {
+                console.log("Ошибка " + error);
+                codeURL = `<h3>Данный оффер уже недействителен, обновите страницу</h3>`;
+                document.querySelector('#insertCode').innerHTML = codeURL;
+         });
+    }
+
     function toggleClassTable(id, confirmText, e = null) {
         const selector = "[data-id=" + '"' + id + '"]'; 
         const elemTable = document.querySelector(selector);
         if ((e.target.classList.contains('btn')) && (!e.target.classList.contains('disabled'))) {
             // get from database code
-            codeURL = 'http://localhost/123456789'
-            document.querySelector('#insertCode').innerHTML = `<h3>Код ссылки для вставки на сайт -<br/><b>${codeURL}</b></h3>`;
+            getReferalURL(id); 
             initOverlay();
         } else {
                 if (elemTable.classList.contains('table-success')) {
@@ -317,7 +329,6 @@ const renderOffers = (state) => {
                         setStatusOffer(id, null);
                     }
                 } else {
-                //if (elemTable.classList.contains('table-primary')) {
                         let keyClass = elemTable.querySelector('#keyUrl');
                         keyClass.classList.toggle('disabled');
                         elemTable.classList.toggle('table-success');
@@ -371,8 +382,6 @@ const renderOffers = (state) => {
             mainContainer.appendChild(shadowOverlay);
             windowAddOffer.classList.add('active');
       }
-
-      
       
       function closeOverlay() {
             shadowOverlay.removeEventListener('click', listener1, false);

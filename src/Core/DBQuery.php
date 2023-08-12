@@ -15,6 +15,16 @@ class DBQuery {
         $this->auth = $auth;
     }
 
+    public function getCurrentOrder() {
+	 $_POST = json_decode( file_get_contents("php://input"), true );
+	 $order = $this->db->select("SELECT id, master_id, offer_id FROM orders WHERE id = ? AND master_id = ?;", [
+	        $_POST['id'], 
+                $this->auth->getUserId()
+             ]);
+   
+        echo json_encode($order);
+    }
+
     public function getYearGrafOffers() {
         $graf = $this->db->select("select m.month, r.* from year as m left join (select i.m, sum(i.kol) as sum, format(sum(i.summa),2) as total from (SELECT MONTH(l.time) as m, sum(l.status) as kol, count(l.id)*o.price as summa FROM logs as l left join offers as o on l.offer_id = o.id AND l.status = 1 WHERE o.customer_id = ? GROUP by MONTH(l.time), o.price) as i group by i.m) as r on m.month = r.m;", [
             $this->auth->getUserId()
