@@ -245,17 +245,18 @@ const renderOffers = (state) => {
     function renderTableOffers(arr=state.offerList) {
         divTable.innerHTML = '';
         arr.forEach(offer => {
-            let classTable = offer['status'] == 1 ? 'table-success' : 'table-primary';
-            let classButton = offer['status'] == 1 ? '' : 'disabled';
-            divTable.innerHTML += `
-                            <tr class=${classTable} data-id=${offer['id']}>
-                                <td>${offer['name']}</td>
-                                <td>${(offer['price']*0.8).toFixed(2)}</td>
-                                <td>${offer['url']}</td>
-                                <td>${offer['keywords']}</td>
-                                <td><a type="button" href="#" class="btn btn-info ${classButton}" id="keyUrl">Cсылка</a></td>
-                            </tr>`;
-                    });
+                let classTable = offer['status'] == 1 ? 'table-success' : 'table-primary';
+                let classButton = offer['status'] == 1 ? '' : 'disabled';
+                divTable.innerHTML += `
+                                <tr class=${classTable} data-id=${offer['id']}>
+                                    <td>${offer['name']}</td>
+                                    <td>${(offer['price']*0.8).toFixed(2)}</td>
+                                    <td>${offer['url']}</td>
+                                    <td>${offer['keywords']}</td>
+                                    <td><a type="button" href="#" class="btn btn-info ${classButton}" id="keyUrl">Cсылка</a></td>
+                                </tr>`;
+        });
+            
     }
 
     function setStatusOffer(id, status) {
@@ -287,6 +288,23 @@ const renderOffers = (state) => {
           });
     }
 
+    function addEventLinkInDB(id) {
+        axios({
+          method: 'post',
+          url: '/post/addEventLink',
+          headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        },
+          data:  {"id": id}
+          })
+          .then(() => {
+              console.log('Лог обновлен.');
+          })
+          .catch(function(error) {
+              console.log(error);
+          });
+    }
+
     function getReferalURL(id) {
         axios({
             method: 'post',
@@ -294,16 +312,19 @@ const renderOffers = (state) => {
             headers: {
             "Content-type": "application/json; charset=UTF-8"
           },
-          data:  {"id": id}
+          data:  {"offer_id": id}
         })
            .then(res => {
             state.url = res.data;
             console.log('state.url', res.data);
            })
            .then(() => {
-                console.log('Данные для урл получены!');
+                    console.log('Данные для урл получены!');
                     codeURL = '<h3>Код ссылки для вставки на сайт -<br/><b>http://' + window.location.hostname + '/ref=' + state.url[0]['master_id'] + ',off=' + state.url[0]['offer_id'] + '</b></h3>';
                     document.querySelector('#insertCode').innerHTML = codeURL;
+            })
+            .then(() => {
+                addEventLinkInDB(id);
             })
             .catch(function(error) {
                 console.log("Ошибка " + error);

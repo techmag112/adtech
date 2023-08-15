@@ -12,21 +12,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _renderOffers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./renderOffers */ "./src/modules/renderOffers.js");
+/* harmony import */ var _renderUsers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./renderUsers */ "./src/modules/renderUsers.js");
 
 
 async function getState(state) {
 
-    await axios.get('/get/getOfferList').then(res => {
-         state.offerList = res.data;
-         console.log('state.offerList', state.offerList);
+    await axios.get('/get/getUserList').then(res => {
+         state.userList = res.data;
+         console.log('state.userList', state.userList);
         })
+        .then(() => {
+            console.log('Загрузка данных выполнена!');
+            (0,_renderUsers__WEBPACK_IMPORTED_MODULE_0__["default"])(state);
+       })   
         .catch(function(error) {
          console.log("Ошибка базы данных " + error);
       });
-      
-      console.log('Загрузка данных выполнена!');
-      (0,_renderOffers__WEBPACK_IMPORTED_MODULE_0__["default"])(state);
 
 };
 
@@ -63,13 +64,13 @@ const makeGraf = (state, name1, name2) => {
     }
 
     function updateTextSummary() {
-        summaryGraf.textContent = 'Итого за период: переходы - '+ state.sum + ', потрачено - ' + state.total + ' руб';
+        summaryGraf.textContent = 'Итого за период: переходы - '+ state.sum + ', доходы - ' + state.total + ' руб';
     }
 
     function getYearGrafFromDB() {
         state.sum = 0;
         state.total = 0;
-        axios.get('/get/getYearGrafOffers').then(res => {
+        axios.get('/get/getYearGrafAdmin').then(res => {
                 state.yearData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
                     return item['total'] === null ? 0 : item['total'];
@@ -93,7 +94,7 @@ const makeGraf = (state, name1, name2) => {
     function getMonthGrafFromDB() {
         state.sum = 0;
         state.total = 0;
-        axios.get('/get/getMonthGrafOffers').then(res => {
+        axios.get('/get/getMonthGrafAdmin').then(res => {
                 state.monthData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
                     return item['total'] === null ? 0 : item['total'];
@@ -117,7 +118,7 @@ const makeGraf = (state, name1, name2) => {
     function getDayGrafFromDB() {
         state.sum = 0;
         state.total = 0;
-        axios.get('/get/getDayGrafOffers').then(res => {
+        axios.get('/get/getDayGrafAdmin').then(res => {
                 state.dayData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
                     return item['total'] === null ? 0 : item['total'];
@@ -189,33 +190,28 @@ const makeGraf = (state, name1, name2) => {
 
 /***/ }),
 
-/***/ "./src/modules/renderOffers.js":
-/*!*************************************!*\
-  !*** ./src/modules/renderOffers.js ***!
-  \*************************************/
+/***/ "./src/modules/renderUsers.js":
+/*!************************************!*\
+  !*** ./src/modules/renderUsers.js ***!
+  \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-const renderOffers = (state) => {
+const renderUsers = (state) => {
 
     const divTable =  document.getElementById('offers');
     const filterAll =  document.getElementById('offer_all');
     const filterSelect =  document.getElementById('offer_select');
     let filterSelectOn = false;
-    const mainContainer = document.querySelector(".container"); 
-    const windowAddOffer = document.querySelector(".layerAddOffer");
-    const btnAdd = document.querySelector("#new");
-    const btnReset = document.querySelector("#reset");
-    const btnAddOffer = document.querySelector("#addoffer");
-    let shadowOverlay;
+    
+    const btnRefresh = document.querySelector("#refresh");
 
     setHandler();
-    offerTableListener();
-    renderTableOffers();
-    
+    userTableListener();
+    renderTableUsers();
 
     function setHandler() {
         // Debug test listener
@@ -225,128 +221,103 @@ const renderOffers = (state) => {
         filterAll.addEventListener( "click", function(e) {
             if (filterSelectOn) {
                 filterSelectOn = false;
-                renderTableOffers();  
+                renderTableUsers();  
             }
         });     
         filterSelect.addEventListener( "click", function(e) {
             if (!filterSelectOn) { 
                 filterSelectOn = true;
-                renderTableOffers(state.offerList.filter(arr => arr['status'] == 1));  
+                renderTableUsers(state.userList.filter(arr => arr['roles_mask'] == 0));  
             }
         });    
-        btnAdd.addEventListener( "click", initOverlay);    
-        btnReset.addEventListener( "click", closeOverlay);    
-        btnAddOffer.addEventListener( "click",  function(e) {
-            e.preventDefault();
-            addOffer();    
-        });    
-
+        btnRefresh.addEventListener( "click", getUsersFromDB);    
     }
-
-    function addOffer() {
-        // verify and transform
-        const inputNameOffer = document.querySelector('#nameOffer');
-        const inputSumOffer = document.querySelector('#sumOffer');
-        const inputUrlOffer = document.querySelector('#urlOffer');
-        const inputKeyOffer = document.querySelector('#keyOffer');
-        let str;
-        str = inputNameOffer.value;
-        inputNameOffer.value = str.slice(0,1).toUpperCase() + str.slice(1)
-        str = inputUrlOffer.value;
-        str = str.replace('https://', ''); 
-        str = str.replace('http://', ''); 
-        inputUrlOffer.value = str;
-        str = inputKeyOffer.value;
-        str = str.toLowerCase();
-        str = str.replaceAll("(?U)[^\\p{L}\\p{N}\\s]+", "");
-        inputKeyOffer.value = str;
-        if (inputNameOffer.value !='' && inputSumOffer.value != '' && inputUrlOffer.value != '' && inputKeyOffer.value != '') {
-            setOfferInDB(inputNameOffer.value, inputSumOffer.value, inputUrlOffer.value, inputKeyOffer.value);
-        } else {
-            console.log('Форма оффера не заполнена!')
-        }
-    }
-
-    function setOfferInDB(nameOffer, sumOffer, urlOffer, keyOffer) {
-        axios({
-            method: 'post',
-            url: '/post/putOfferInDB',
-            headers: {
-            "Content-type": "application/json; charset=UTF-8"
-        },
-            data:  {
-                "name": nameOffer,
-                "price": sumOffer,
-                "url": urlOffer,
-                "keywords": keyOffer
-                }
-            })
-            .then(() => {
-                 getOffersFromDB();
-                 console.log('Таблица офферов обновлена.');
-            })    
-            .then(() => {
-                console.log('Оффер успешно обновлен.');
-                closeOverlay();
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    }
-
-    function getOffersFromDB() {
-        axios.get('/get/getOfferList').then(res => {
-                state.offerList = res.data;
-                console.log('state.offerList', state.offerList);
-            }) .then(() => {
-                console.log('Загрузка данных выполнена!');
-                renderOffers(state);
-            })
-            .catch(function(error) {
+ 
+    function getUsersFromDB() {
+        axios.get('/get/getUserList').then(res => {
+            state.userList = res.data;
+            console.log('state.userList', state.userList);
+           })
+           .then(() => {
+               console.log('Загрузка данных выполнена!');
+               renderTableUsers();
+          })   
+           .catch(function(error) {
             console.log("Ошибка базы данных " + error);
-        });
+         });
     }   
 
-    function renderTableOffers(arr=state.offerList) {
+    function renderTableUsers(arr=state.userList) {
         divTable.innerHTML = '';
         if (arr.length != 0) {
-            arr.forEach(offer => {
-                let classTable = offer['status'] ? 'table-success' : 'table-danger';
+            arr.forEach(user => {
+                let classTable = user['roles_mask'] == 163856 ? 'table-success' : user['roles_mask'] == 131090 ? 'table-primary' : 'table-danger';
+                let nameRole = user['roles_mask'] == 163856 ? 'Заказчик' : user['roles_mask'] == 131090 ? 'Веб-мастер' : 'Не определен';
                 divTable.innerHTML += `
-                                <tr class=${classTable} data-id=${offer['id']}>
-                                    <td>${offer['name']}</td>
-                                    <td>${offer['price']}</td>
-                                    <td>${offer['url']}</td>
-                                    <td>${offer['keywords']}</td>
-                                    <td>${offer['count']}</td>
+                                <tr class=${classTable} data-id=${user['id']}>
+                                    <td>${user['username']}</td>
+                                    <td>${user['email']}</td>
+                                    <td id="role">${nameRole}</td>
                                 </tr>`;
                         });
         }
     }
 
-    function setStatusOffer(id, status) {
-        state.offerList.forEach(arr => {
+    function changeRole(id, selector, status) { 
+        const subselector = selector.querySelector("#role");
+        state.userList.forEach(arr => {
             if (arr.id == id) {
-                arr.status = status;
+                if (status) {
+                    if (arr['roles_mask'] === 0) {
+                        arr['roles_mask'] =  131090;   
+                    } else {
+                        if (arr['roles_mask'] === 131090) {
+                            arr['roles_mask'] = 163856;   
+                        } else {
+                            arr['roles_mask'] = 131090;   
+                        }   
+                    }
+                } else {
+                    arr['roles_mask'] = 0;  
+                }
+                setRoleInDB(id, arr['roles_mask']);
+                switch (arr['roles_mask']) {
+                    case 0:
+                        selector.classList.add('table-danger');
+                        selector.classList.remove('table-success');
+                        selector.classList.remove('table-primary');   
+                        subselector.textContent = 'Не определен';
+                        break;
+                    case 163856:
+                        selector.classList.toggle('table-success');
+                        selector.classList.toggle('table-primary');
+                        subselector.textContent = 'Заказчик';
+                        break;
+                    case 131090:
+                        selector.classList.add('table-primary');   
+                        selector.classList.remove('table-danger');
+                        selector.classList.remove('table-success');
+                        subselector.textContent = 'Веб-мастер';
+                        break;
+                }              
             }
         });
-        setStatusOfferInDB(id, status);
-        if ((filterSelectOn) && (!status)) { 
-            renderOffers(state.offerList.filter(arr => arr['status'] == 1));  
+        if (filterSelectOn) { 
+            renderTableUsers(state.userList.filter(arr => arr['roles_mask'] == 0));  
         }
     }
 
-    function setStatusOfferInDB(id, status) {
+    function setRoleInDB(id, role) {
         axios({
           method: 'post',
-          url: '/post/setStatusOfferInDB',
+          url: '/post/setRoleInDB',
           headers: {
           "Content-type": "application/json; charset=UTF-8"
         },
-          data:  {"id": id, "status": status}
+          data:  {"id": id, "roles_mask": role}
           })
           .then(() => {
-              console.log('Статус оффера успешно обновлен.');
+              console.log('Роль пользователя успешно обновлен.');
           })
           .catch(function(error) {
               console.log(error);
@@ -356,23 +327,19 @@ const renderOffers = (state) => {
     function toggleClassTable(id, confirmText) {
         const selector = "[data-id=" + '"' + id + '"]'; 
         const elemTable = document.querySelector(selector);
-        if (elemTable.classList.contains('table-success')) {
-            if (confirm(confirmText)) {
-                setStatusOffer(id, 0);
-                elemTable.classList.toggle('table-success');
-                elemTable.classList.toggle('table-danger');
-            }
-        } else {
-            setStatusOffer(id, 1);
-            elemTable.classList.toggle('table-success');
-            elemTable.classList.toggle('table-danger');
-        }
+        if (confirm(confirmText)) { 
+            confirmText === 'Изменить роль?' ? changeRole(id, elemTable, true) : changeRole(id, elemTable, false);
+        } 
     }
 
-    function offerTableListener() {
+    function userTableListener() {
         divTable.addEventListener( "click", function(e) {
-          toggleClassTable(getIdOnClick(e), "Вы действительно хотите деактивировать оффер?");
-        });     
+          toggleClassTable(getIdOnClick(e), "Изменить роль?");
+        });   
+        divTable.addEventListener('contextmenu', function(e)  {
+            e.preventDefault();
+            toggleClassTable(getIdOnClick(e), "Отменить роль?");  
+        })
     }
   
     function getIdOnClick(e) { 
@@ -391,42 +358,11 @@ const renderOffers = (state) => {
           return false;
         }
     }
-
-    function listener1(e) {
-        if (e.target.classList.contains('overlay__shadow')) {
-            closeOverlay();
-        }
-      }
-
-    function listener2(e) {
-        if (e.key === 'Escape') {
-            closeOverlay();
-        }
-      }
-     
-    function initOverlay() { 
-            shadowOverlay = document.createElement('div');
-            shadowOverlay.classList.add('overlay__shadow');
-            shadowOverlay.classList.add('overlay__shadow--show');
-            shadowOverlay.addEventListener('click', listener1);
-            window.addEventListener('keydown', listener2);
-            mainContainer.appendChild(shadowOverlay);
-            windowAddOffer.classList.add('active');
-      }
-      
-      function closeOverlay() {
-            shadowOverlay.removeEventListener('click', listener1, false);
-            window.removeEventListener('keydown', listener2, false);
-            shadowOverlay.classList.remove('overlay__shadow--show');
-            shadowOverlay.classList.remove('overlay__shadow');
-            mainContainer.removeChild(shadowOverlay);
-            windowAddOffer.classList.remove('active');
-      }
     
 
 };
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (renderOffers);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (renderUsers);
 
 /***/ })
 
@@ -501,7 +437,7 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', () => {
 
    let state = {
-    offerList: [],
+    userList: [],
     yearLabels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
     monthLabels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
     dayLabels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
@@ -509,7 +445,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   (0,_modules_getState__WEBPACK_IMPORTED_MODULE_0__["default"])(state);
   
-  (0,_modules_makeGraf__WEBPACK_IMPORTED_MODULE_1__["default"])(state, 'Расходы, руб', 'Переходы, клик');
+  (0,_modules_makeGraf__WEBPACK_IMPORTED_MODULE_1__["default"])(state, 'Доходы, руб', 'Переходы, клик');
    
 });
 
@@ -518,4 +454,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
 /******/ })()
 ;
-//# sourceMappingURL=script.js.map
+//# sourceMappingURL=script3.js.map

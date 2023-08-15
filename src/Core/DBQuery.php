@@ -15,10 +15,64 @@ class DBQuery {
         $this->auth = $auth;
     }
 
+    public function addEventLink() {
+        $_POST = json_decode( file_get_contents("php://input"), true );
+        $this->db->insert(
+           'links',
+                [
+                    // set
+                    'master_id' => $this->auth->getUserId(),
+                    'offer_id' => $_POST["id"]
+                ]
+            );
+    }
+
+    public function getMonthGrafAdmin() {
+        $graf = $this->db->select("select m.day, r.* from month as m left join (select i.d, sum(i.kol) as sum, format((sum(i.summa)*0.2),2) as total from (SELECT DAY(l.time) as d, sum(l.status) as kol, count(l.id)*o.price as summa FROM logs as l left join offers as o on l.offer_id = o.id and l.status = 1 left join orders as m on m.offer_id = o.id WHERE MONTH(l.time) = MONTH(CURDATE()) AND YEAR(l.time) = YEAR(CURDATE()) GROUP by DAY(l.time), o.price) as i group by i.d) as r on m.day = r.d;");
+
+        echo json_encode($graf);
+    }
+
+    public function getDayGrafAdmin() {
+        $graf = $this->db->select("select m.hour, r.* from day as m left join (select i.h, sum(i.kol) as sum, format((sum(i.summa)*0.2),2) as total from (SELECT HOUR(l.time) as h, sum(l.status) as kol, count(l.id)*o.price as summa FROM logs as l left join offers as o on l.offer_id = o.id and l.status = 1 join orders as m on m.offer_id = o.id WHERE DAY(l.time) = DAY(CURDATE()) AND MONTH(l.time) = MONTH(CURDATE()) AND YEAR(l.time) = YEAR(CURDATE()) GROUP by HOUR(l.time), o.price) as i group by i.h) as r on m.hour = r.h;");
+
+        echo json_encode($graf);
+    }
+
+
+    public function getYearGrafAdmin() {
+        $graf = $this->db->select("select m.month, r.* from year as m left join (select i.m, sum(i.kol) as sum, format((sum(i.summa)*0.2),2) as total from (SELECT MONTH(l.time) as m, sum(l.status) as kol, count(l.id)*o.price as summa FROM logs as l left join offers as o on l.offer_id = o.id and l.status = 1 left join orders as m on m.offer_id = o.id GROUP by MONTH(l.time), o.price) as i group by i.m) as r on m.month = r.m;");
+
+        echo json_encode($graf);
+    }
+
+    public function setRoleInDB() {
+	$_POST = json_decode( file_get_contents("php://input"), true );
+        $this->db->update(
+            'users',
+            [
+                // set
+                'roles_mask' => $_POST["roles_mask"]
+            ],
+            [
+                // where
+                'id' => $_POST["id"]
+            ]
+        );
+    }
+
+    public function getUserList() {
+	 $users = $this->db->select("SELECT id, email, username, roles_mask FROM users WHERE id <> ?;", [
+            $this->auth->getUserId()
+         ]);
+
+        echo json_encode($users);
+   }
+
     public function getCurrentOrder() {
 	 $_POST = json_decode( file_get_contents("php://input"), true );
-	 $order = $this->db->select("SELECT id, master_id, offer_id FROM orders WHERE id = ? AND master_id = ?;", [
-	        $_POST['id'], 
+	 $order = $this->db->select("SELECT id, master_id, offer_id FROM orders WHERE offer_id = ? AND master_id = ?;", [
+	        $_POST['offer_id'], 
                 $this->auth->getUserId()
              ]);
    

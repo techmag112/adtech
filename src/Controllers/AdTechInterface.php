@@ -9,7 +9,7 @@ use Delight\Db\PdoDatabase;
 use Tm\Adtech\Core\Redirect;
 use Tm\Adtech\Core\DBQuery;
 
-class AdTechEngine {
+class AdTechInterface {
 
     private $auth, $templates, $session_name, $input, $token, $db;
 

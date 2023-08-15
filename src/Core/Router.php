@@ -8,7 +8,7 @@ use PDO;
 use Delight\Auth\Auth;
 use Delight\Db\PdoDatabase;
 use League\Plates\Engine;
-use \Tm\Adtech\Controllers\AdtechEngine;
+use \Tm\Adtech\Controllers\AdtechInterface;
 use \Tm\Adtech\Controllers\LoginController;
 use \Tm\Adtech\Controllers\ErrorController;
 use \Tm\Adtech\Controllers\UserDataController;
@@ -62,12 +62,12 @@ class Router {
 
              $r->addRoute('GET', '/404', ['Tm\Adtech\Controllers\ErrorController', 'mainAction']);
 
-             $r->addRoute('GET', '/get/{action:\w+}', ['Tm\Adtech\Controllers\AdTechEngine', 'actionDB']);
-             $r->addRoute('POST', '/post/{action:\w+}', ['Tm\Adtech\Controllers\AdTechEngine', 'actionDB']);
+             $r->addRoute('GET', '/get/{action:\w+}', ['Tm\Adtech\Controllers\AdTechInterface', 'actionDB']);
+             $r->addRoute('POST', '/post/{action:\w+}', ['Tm\Adtech\Controllers\AdTechInterface', 'actionDB']);
 
              $r->addRoute('GET', '/ref={ref:\d+},off={off:\d+}', ['Tm\Adtech\Controllers\ReferLinkController', 'gotoReferLink']);
 
-             $r->addRoute('GET', '/', ['Tm\Adtech\Controllers\AdTechEngine', 'checkRole']);
+             $r->addRoute('GET', '/', ['Tm\Adtech\Controllers\AdTechInterface', 'checkRole']);
         
         });
 
