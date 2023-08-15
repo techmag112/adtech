@@ -15,6 +15,48 @@ class DBQuery {
         $this->auth = $auth;
     }
 
+    public function countLinksYear() {
+        $value = $db->selectValue(
+            'SELECT count(master_id) FROM links WHERE YEAR(time) = YEAR(CURDATE());'
+        );
+        echo json_encode($value);
+    }
+
+    public function countRejectYear() {
+        $value = $db->selectValue(
+            'SELECT count(status) FROM logs WHERE YEAR(time) = YEAR(CURDATE()) AND status = 0;'
+        );
+        echo json_encode($value);
+    }
+
+    public function countLinksMonth() {
+        $value = $db->selectValue(
+            'SELECT count(master_id) FROM links WHERE MONTH(time) = MONTH(CURDATE()) AND YEAR(time) = YEAR(CURDATE());'
+        );
+        echo json_encode($value);
+    }
+
+    public function countRejectMonth() {
+        $value = $db->selectValue(
+            'SELECT count(status) FROM logs WHERE MONTH(time) = MONTH(CURDATE()) AND YEAR(time) = YEAR(CURDATE()) AND status = 0;'
+        );
+        echo json_encode($value);
+    }
+
+    public function countLinksDay() {
+        $value = $db->selectValue(
+            'SELECT count(master_id) FROM links WHERE DAY(time) = DAY(CURDATE()) AND MONTH(time) = MONTH(CURDATE()) AND YEAR(time) = YEAR(CURDATE());'
+        );
+        echo json_encode($value);
+    }
+
+    public function countRejectDay() {
+        $value = $db->selectValue(
+            'SELECT count(status) FROM logs WHERE DAY(time) = DAY(CURDATE()) AND MONTH(time) = MONTH(CURDATE()) AND YEAR(time) = YEAR(CURDATE()) AND status = 0;'
+        );
+        echo json_encode($value);
+    }
+
     public function addEventLink() {
         $_POST = json_decode( file_get_contents("php://input"), true );
         $this->db->insert(
@@ -38,7 +80,6 @@ class DBQuery {
 
         echo json_encode($graf);
     }
-
 
     public function getYearGrafAdmin() {
         $graf = $this->db->select("select m.month, r.* from year as m left join (select i.m, sum(i.kol) as sum, format((sum(i.summa)*0.2),2) as total from (SELECT MONTH(l.time) as m, sum(l.status) as kol, count(l.id)*o.price as summa FROM logs as l left join offers as o on l.offer_id = o.id and l.status = 1 left join orders as m on m.offer_id = o.id GROUP by MONTH(l.time), o.price) as i group by i.m) as r on m.month = r.m;");
