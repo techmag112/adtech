@@ -2,7 +2,16 @@
 
 namespace Tm\Adtech\Core;
 
+/**
+ * Статический класс-обертка переменных get и post
+ */
 class Input {
+
+    /**
+    * @static exists() если глобальная переменная существует, возвращает ее тип - post или get
+    * @param string $type
+    * @return boolean true|false
+    */
     public static function exists($type = 'post') {
         switch ($type) {
             case 'post':
@@ -15,6 +24,11 @@ class Input {
         }
     }
 
+    /**
+    * get() если глобальная переменная существует, возвращает ее значение
+    * @param string $item
+    * @return mixed|''
+    */
     public static function get($item) {
         if(isset($_POST[$item])) {
             return $_POST[$item];

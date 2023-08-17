@@ -8,19 +8,31 @@ use League\Plates\Engine;
 use Tm\Adtech\Core\Token;
 use Tm\Adtech\Core\Input;
 use Tm\Adtech\Core\Redirect;
-use Tm\Adtech\Core\Session;
+//use Tm\Adtech\Core\Session;
 
+/**
+* Класс контроллера авторизации пользователя
+*/
 class LoginController {
 
-    private $auth, $templates, $input, $token;
+    /**
+    * @var object $auth - экземпляр класса Delight\Auth\Auth (Авторизация)
+    * @var object $templates - экземпляр класса League\Plates\Engine (Шаблоны)
+    */
+    private $auth, $templates;
 
     function __construct(Engine $templates, Auth $auth) {
         $this->templates = $templates;
         $this->auth = $auth;
     }
 
+    /**
+    * login_form_view() проверка авторизации и вызов шаблона логина
+    * @return void
+    */
     public function login_form_view(): void 
     {
+        //** Пользователь не авторизирован? */
         if (!$this->auth->isLoggedIn()) {
             echo $this->templates->render('login');
         } else {
@@ -28,8 +40,13 @@ class LoginController {
         }
     }
 
+    /**
+    * reg_form_view() проверка авторизации и вызов шаблона регистрации
+    * @return void
+    */
     public function reg_form_view(): void 
     {
+        //** Пользователь не авторизирован? */
         if (!$this->auth->isLoggedIn()) {
             echo $this->templates->render('register');
         } else {
@@ -37,19 +54,27 @@ class LoginController {
         }
     }
 
+     /**
+    * logout() логаут из авторизации и возврат в шаблон логина
+    * @return void
+    */
     public function logout(): void {
         $this->auth->logOut();
         $this->auth->destroySession();
         Redirect::to('/login');
     }
 
+    /**
+    * login() логин авторизации
+    * @return void
+    */
     public function login(): void
     {
         if (!$this->auth->isLoggedIn()) {
             try {
+                /** Проверка токена формы ввода логина - защита от атак XSS */
                 if(Input::exists() && Token::check(Input::get('token'))) {
                         $this->auth->login($_POST['email'], $_POST['password']);
-                        //User is logged in ??????
                         Redirect::to('/');
                 } else {
                     echo $this->templates->render('login', [
@@ -58,6 +83,7 @@ class LoginController {
                     ]);
                 }
             }
+            /** Проверки типов ошибок */
             catch (\Delight\Auth\InvalidEmailException $e) {
                 echo $this->templates->render('login', [
                     'message' => 'Неверный емаил адрес',
@@ -79,6 +105,10 @@ class LoginController {
         }
     }
   
+    /**
+    * login() регистрация пользователя в системе авторизации
+    * @return void
+    */
     public function isRegistration(): void 
     {
             try {
@@ -93,6 +123,7 @@ class LoginController {
                             ]);
                     }            
             }
+            /** Проверки типов ошибок */
             catch (\Delight\Auth\DuplicateUsernameException $e) {
                 echo $this->templates->render('register', [
                     'message' => 'Данное имя пользователя уже используется.',

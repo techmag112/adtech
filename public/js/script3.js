@@ -64,7 +64,76 @@ const makeGraf = (state, name1, name2) => {
     }
 
     function updateTextSummary() {
-        summaryGraf.textContent = 'Итого за период: переходы - '+ state.sum + ', доходы - ' + state.total + ' руб';
+        summaryGraf.textContent = 'Итого за период: доходы - ' + state.total + ' руб, переходы - '+ state.sum + ', отказы - ' + state.reject + ', выданные ссылки - ' + state.links ;
+    }
+
+    function getCountLinksYear() {
+        axios.get('/get/countRejectYear').then(res => {
+            state.links = res.data;
+            console.log(state.links);
+        })
+            .catch(function(error) {
+            console.log("Ошибка базы данных " + error);
+         });
+    }
+
+    function getRejectYear() {
+        axios.get('/get/countRejectYear').then(res => {
+            state.reject = res.data;
+            console.log(state.reject);
+        })
+        .then(() => {
+            updateTextSummary();
+        })
+            .catch(function(error) {
+            console.log("Ошибка базы данных " + error);
+         });
+    }
+
+    function getCountLinksMonth() {
+        axios.get('/get/countRejectMonth').then(res => {
+            state.links = res.data;
+            console.log(state.links);
+        })
+            .catch(function(error) {
+            console.log("Ошибка базы данных " + error);
+         });
+    }
+
+    function getRejectMonth() {
+        axios.get('/get/countRejectMonth').then(res => {
+            state.reject = res.data;
+            console.log(state.reject);
+        })
+        .then(() => {
+            updateTextSummary();
+        })
+            .catch(function(error) {
+            console.log("Ошибка базы данных " + error);
+         });
+    }
+
+    function getCountLinksDay() {
+        axios.get('/get/countRejectDay').then(res => {
+            state.links = res.data;
+            console.log(state.links);
+        })
+            .catch(function(error) {
+            console.log("Ошибка базы данных " + error);
+         });
+    }
+
+    function getRejectDay() {
+        axios.get('/get/countRejectDay').then(res => {
+            state.reject = res.data;
+            console.log(state.reject);
+        })
+        .then(() => {
+            updateTextSummary();
+        })
+            .catch(function(error) {
+            console.log("Ошибка базы данных " + error);
+         });
     }
 
     function getYearGrafFromDB() {
@@ -82,8 +151,11 @@ const makeGraf = (state, name1, name2) => {
                 console.log('state.yearData1', state.yearData1);
                 console.log('state.yearData2', state.yearData2);
             }) .then(() => {
+                getCountLinksYear();
+                getRejectYear();
+            }) .then(() => {
                 console.log('Загрузка графика выполнена!');
-                updateTextSummary();
+               // updateTextSummary();
                 yearGraf();
             })
             .catch(function(error) {
@@ -106,8 +178,11 @@ const makeGraf = (state, name1, name2) => {
                 console.log('state.monthData1', state.monthData1);
                 console.log('state.monthData2', state.monthData2);
             }) .then(() => {
+                getCountLinksMonth();
+                getRejectMonth();
+            }) .then(() => {
                 console.log('Загрузка графика выполнена!');
-                updateTextSummary();
+                // updateTextSummary();
                 monthGraf();
             })
             .catch(function(error) {
@@ -130,8 +205,11 @@ const makeGraf = (state, name1, name2) => {
                 console.log('state.dayData1', state.dayData1);
                 console.log('state.dayData2', state.dayData2);
             }) .then(() => {
+                getCountLinksDay();
+                getRejectDay();
+            }) .then(() => {
                 console.log('Загрузка графика выполнена!');
-                updateTextSummary();
+                // updateTextSummary();
                 dayGraf();
             })
             .catch(function(error) {

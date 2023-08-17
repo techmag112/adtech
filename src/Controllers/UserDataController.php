@@ -10,9 +10,12 @@ use Tm\Adtech\Core\Token;
 use Tm\Adtech\Core\Input;
 use Tm\Adtech\Core\Redirect;
 
+/**
+* Класс контроллера редактирования данных пользователя
+*/
 class UserDataController { 
 
-    private $auth, $templates, $input, $token, $db, $img;
+    private $auth, $templates, $db;
 
     function __construct(Engine $templates, PdoDatabase $db, Auth $auth) {
         $this->templates = $templates;
@@ -20,6 +23,10 @@ class UserDataController {
         $this->auth = $auth;
     }
 
+    /**
+    * changepass_view() вывод шаблона изменения пароля авторизированного пользователя
+    * @return void
+    */
     public function changepass_view(): void 
     {
         if (!$this->auth->isLoggedIn()) {
@@ -30,26 +37,29 @@ class UserDataController {
         }
     }
 
+    /**
+    * changepass() сохранение в базе измененного пароля с проверкой токена формы (защита от XSS)
+    * @return void
+    */
     public function changepass(): void 
     {
+        /** Пользователь не зарегестрирован? */
         if (!$this->auth->isLoggedIn()) {
             Redirect::to('/login');
         } else {
-            if(Input::exists()) {
-                if(Token::check(Input::get('token'))) {
+            /** Проверка полей и токена формы на корректность */
+            if(Input::exists()) { 
+                if (Token::check(Input::get('token'))) {
                     if ($_POST['new_pass'] === $_POST['new_pass_again']) {
                         try {
                             $this->auth->changePassword($_POST['current_pass'], $_POST['new_pass']);
                             Redirect::to('/', 'Пароль успешно изменен');
                         }
-                        catch (\Delight\Auth\NotLoggedInException $e) {
-                            $message = 'Not logged in';
-                        }
                         catch (\Delight\Auth\InvalidPasswordException $e) {
-                            $message = 'Invalid password(s)';
+                            $message = 'Неверный пароль';
                         }
                         catch (\Delight\Auth\TooManyRequestsException $e) {
-                            $message = 'Too many requests';
+                            $message = 'Слишком много запросов';
                         }
                     } else {
                         $message = 'Варианты нового пароля не совпадают.';    
@@ -69,8 +79,13 @@ class UserDataController {
         }
     }
 
+     /**
+    * update_view() вывод шаблона изменения имени авторизированного пользователя
+    * @return void
+    */
     public function update_view(): void 
     {
+        /** Пользователь не авторизован? */
         if (!$this->auth->isLoggedIn()) {
             Redirect::to('/login');
         } else {
@@ -80,6 +95,10 @@ class UserDataController {
         }
     }
 
+     /**
+    * update() обновление в базе имени авторизированного пользователя  с проверкой токена формы (защита от XSS)
+    * @return void
+    */
     public function update(): void 
     {
         if (!$this->auth->isLoggedIn()) {

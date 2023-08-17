@@ -15,11 +15,18 @@ use \Tm\Adtech\Controllers\UserDataController;
 use \Tm\Adtech\Controllers\ReferLinkController;
 use \Tm\Adtech\Core\Redirect;
 
+/**
+ * Класс роутера-маршрутизатора
+ */
 class Router {
 
+    /**
+    * @static run() создает контейнер DI (внедрения зависимостей) и запускает роутер
+    */
     public static function run() {
 
          $builder = new ContainerBuilder();
+         /** Сбор всех зависимостей в контейнер */
          $builder->addDefinitions([
              Engine::class => function() { 
                  return new Engine('../src/Templates');
@@ -49,33 +56,43 @@ class Router {
         $container = $builder->build();
        
         $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-            // Авторизация
+            /** Маршруты авторизации */
+            /** показ формы регистрации */
              $r->addRoute('GET', '/register', ['Tm\Adtech\Controllers\LoginController', 'reg_form_view']);
+             /** процедура регистрации */
              $r->addRoute('POST', '/register', ['Tm\Adtech\Controllers\LoginController', 'isRegistration']);
+             /** показ формы обновления имени пользователя */
              $r->addRoute('GET', '/update', ['Tm\Adtech\Controllers\UserDataController', 'update_view']);
+             /** процедура обновление пароля */
              $r->addRoute('POST', '/update', ['Tm\Adtech\Controllers\UserDataController', 'update']);
+             /** показ формы изменения пароля */
              $r->addRoute('GET', '/changepass', ['Tm\Adtech\Controllers\UserDataController', 'changepass_view']);
+             /** процедура изменение пароля */
              $r->addRoute('POST', '/changepass', ['Tm\Adtech\Controllers\UserDataController', 'changepass']);
+             /** показ формы логина */
              $r->addRoute('GET', '/login', ['Tm\Adtech\Controllers\LoginController', 'login_form_view']);
+             /** процедура логина */
              $r->addRoute('POST', '/login', ['Tm\Adtech\Controllers\LoginController', 'login']);
+             /** процедура логута */
              $r->addRoute('GET', '/logout', ['Tm\Adtech\Controllers\LoginController', 'logout']);
-
+            /** вывод шаблона страницы ршибка 404 */
              $r->addRoute('GET', '/404', ['Tm\Adtech\Controllers\ErrorController', 'mainAction']);
-
+            /** запрос из внешнего интерфейса по методу get */
              $r->addRoute('GET', '/get/{action:\w+}', ['Tm\Adtech\Controllers\AdTechInterface', 'actionDB']);
+             /** запрос из внешнего интерфейса по методу post */
              $r->addRoute('POST', '/post/{action:\w+}', ['Tm\Adtech\Controllers\AdTechInterface', 'actionDB']);
-
+            /** обработка реферального линка */
              $r->addRoute('GET', '/ref={ref:\d+},off={off:\d+}', ['Tm\Adtech\Controllers\ReferLinkController', 'gotoReferLink']);
-
+            /** вывод шаблона интерфейса по итогам проверки роли пользователя */
              $r->addRoute('GET', '/', ['Tm\Adtech\Controllers\AdTechInterface', 'checkRole']);
         
         });
 
-        // // Fetch method and URI from somewhere
+        // Fetch method and URI from somewhere
          $httpMethod = $_SERVER['REQUEST_METHOD'];
          $uri = $_SERVER['REQUEST_URI'];
         
-        // // Strip query string (?foo=bar) and decode URI
+        // Strip query string (?foo=bar) and decode URI
          if (false !== $pos = strpos($uri, '?')) {
              $uri = substr($uri, 0, $pos);
          }
