@@ -23,7 +23,7 @@
             <div class="col-sm-12 col-md-10 mx-auto bg-white rounded shadow">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="m-5 text-center"><h2>SF-AdTech</h2></div>
+                        <div class="m-5 text-center"><h3>SF-AdTech</h3></div>
             
                             <?php echo flash()->displayBootstrap(); ?> 
 

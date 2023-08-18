@@ -215,8 +215,7 @@ const renderOffers = (state) => {
     setHandler();
     offerTableListener();
     renderTableOffers();
-    
-
+   
     function setHandler() {
         // Debug test listener
         //document.addEventListener( "click", function(e) {
@@ -243,6 +242,17 @@ const renderOffers = (state) => {
 
     }
 
+    function htmlspecialchars(str) {
+        if (typeof(str) == "string") {
+         str = str.replace(/&/g, "&amp;"); /* must do &amp; first */
+         str = str.replace(/"/g, '"');
+         str = str.replace(/'/g, "&#039;");
+         str = str.replace(/</g, "<");
+         str = str.replace(/>/g, ">");
+         }
+        return str;
+    }
+
     function addOffer() {
         // verify and transform
         const inputNameOffer = document.querySelector('#nameOffer');
@@ -251,15 +261,17 @@ const renderOffers = (state) => {
         const inputKeyOffer = document.querySelector('#keyOffer');
         let str;
         str = inputNameOffer.value;
-        inputNameOffer.value = str.slice(0,1).toUpperCase() + str.slice(1)
+        inputNameOffer.value = htmlspecialchars(str.slice(0,1).toUpperCase() + str.slice(1).toLowerCase());
+        inputSumOffer.value = htmlspecialchars(inputSumOffer.value);
         str = inputUrlOffer.value;
-        str = str.replace('https://', ''); 
-        str = str.replace('http://', ''); 
-        inputUrlOffer.value = str;
+        //str = str.replace('https://', ''); 
+        //str = str.replace('http://', ''); 
+        //str = str.split('//')[1];
+        inputUrlOffer.value = htmlspecialchars(str.split('//')[1]);
         str = inputKeyOffer.value;
         str = str.toLowerCase();
         str = str.replaceAll("(?U)[^\\p{L}\\p{N}\\s]+", "");
-        inputKeyOffer.value = str;
+        inputKeyOffer.value = htmlspecialchars(str);
         if (inputNameOffer.value !='' && inputSumOffer.value != '' && inputUrlOffer.value != '' && inputKeyOffer.value != '') {
             setOfferInDB(inputNameOffer.value, inputSumOffer.value, inputUrlOffer.value, inputKeyOffer.value);
         } else {

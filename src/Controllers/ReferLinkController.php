@@ -3,6 +3,7 @@
 namespace Tm\Adtech\Controllers;
 
 use Tm\Adtech\Core\Reflink;
+use Tm\Adtech\Core\Redirect;
 
 /**
 * Класс контроллера обработки и выдачи реферальной ссылки
@@ -26,13 +27,15 @@ class ReferLinkController {
         // Деконструкция массива переменных
         ['ref' => $id_master, 'off' => $id_offer] = $vars;
  
-        $url = $this->ref->checkRefLink($id_offer);
-        if (!empty($url)) {
+        $link = $this->ref->checkRefLink($id_offer);
+     
+        if (!empty($link)) {
             // пошли куда послали
-            $this->ref->addLogs($id_master, $id_offer, 1);
+            $this->ref->addLogs($id_master, $link[0]['customer_id'], $id_offer, 1);
+            Redirect::to($link[0]['url']);
         } else {
             // пошли на 404
-            $this->ref->addLogs($id_master, $id_offer, 0);
+            $this->ref->addLogs($id_master, null, $id_offer, 0);
             Redirect::to('404');
         }
     }

@@ -35,21 +35,19 @@ class Reflink {
     * addLogs() добавляет строку лога о переходе на рекламную ссылку в таблицу Logs 
     *
     * @param int $master_id - id веб мастера
+    * @param int $customer_id - id заказчика
     * @param int $offer_id - id рекламного предложения
     * @param int $status - статус успешности перехода по ссылке: 1 - да, 0 - нет
     * @return void
     */
-    public function addLogs($master_id, $offer_id, $status) {
-        d($master_id, $offer_id, $status);
-        die;
+    public function addLogs($master_id, $customer_id, $offer_id, $status) {
         $this->db->insert(
             'logs',
             [
                 // set
                 "master_id" => $master_id,
-                "customer_id" => $this->url['customer_id'], 
+                "customer_id" => $customer_id, 
                 "offer_id" => $offer_id, 
-                "url" => $this->url['url'], 
                 "status" => $status
             ]
         );

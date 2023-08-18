@@ -135,11 +135,11 @@ h2 {
 }
 
 
-input:invalid {
+.inputOffer input:invalid {
 	border: 2px solid red;
 }
 
-input:valid {
+.inputOffer input:valid {
 	border: 2px solid green;
   
 }
