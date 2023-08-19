@@ -64,11 +64,11 @@ const makeGraf = (state, name1, name2) => {
     }
 
     function updateTextSummary() {
-        summaryGraf.textContent = 'Итого за период: доходы - ' + state.total + ' руб, переходы - '+ state.sum + ', отказы - ' + state.reject + ', выданные ссылки - ' + state.links ;
+        summaryGraf.textContent = 'Итого за период: доходы - ' + state.total.toFixed(2) + ' руб, переходы - '+ state.sum + ', отказы - ' + state.reject + ', выданные ссылки - ' + state.links ;
     }
 
     function getCountLinksYear() {
-        axios.get('/get/countRejectYear').then(res => {
+        axios.get('/get/countLinksYear').then(res => {
             state.links = res.data;
             console.log(state.links);
         })
@@ -91,7 +91,7 @@ const makeGraf = (state, name1, name2) => {
     }
 
     function getCountLinksMonth() {
-        axios.get('/get/countRejectMonth').then(res => {
+        axios.get('/get/countLinksMonth').then(res => {
             state.links = res.data;
             console.log(state.links);
         })
@@ -114,7 +114,7 @@ const makeGraf = (state, name1, name2) => {
     }
 
     function getCountLinksDay() {
-        axios.get('/get/countRejectDay').then(res => {
+        axios.get('/get/countLinksDay').then(res => {
             state.links = res.data;
             console.log(state.links);
         })

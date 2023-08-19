@@ -25,17 +25,17 @@ class ReferLinkController {
     */
     function gotoReferLink($vars) {
         // Деконструкция массива переменных
-        ['ref' => $id_master, 'off' => $id_offer] = $vars;
+        ['ref' => $master_id, 'off' => $offer_id] = $vars;
  
-        $link = $this->ref->checkRefLink($id_offer);
-     
+        $link = $this->ref->checkRefLink($master_id, $offer_id);
+       
         if (!empty($link)) {
             // пошли куда послали
-            $this->ref->addLogs($id_master, $link[0]['customer_id'], $id_offer, 1);
-            Redirect::to($link[0]['url']);
+            $this->ref->addLogs($master_id, $link[0]['customer_id'], $offer_id, 1);
+            Redirect::to('http://' . $link[0]['url']);
         } else {
             // пошли на 404
-            $this->ref->addLogs($id_master, null, $id_offer, 0);
+            $this->ref->addLogs($master_id, 0, $offer_id, 0);
             Redirect::to('404');
         }
     }

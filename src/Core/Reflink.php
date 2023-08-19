@@ -21,12 +21,13 @@ class Reflink {
 
     /**
     * checkRefLink() возвращает id заказчика и урл реферальной ссылки, если оффер активен
-    *
+    * @param int $master_id - id веб-мастер
     * @param int $offer_id - id рекламного предложения
     * @return Array
     */
-    public function checkRefLink($offer_id) {
-        return $this->db->select("select customer_id, url FROM offers WHERE status = 1 AND id = ?;", [
+    public function checkRefLink($master_id, $offer_id) {
+        return $this->db->select("SELECT customer_id, url FROM offers INNER JOIN orders ON offers.id = orders.offer_id AND orders.master_id = ? AND offers.id = ? AND offers.status = 1;", [
+                $master_id,
                 $offer_id 
              ]);
     }

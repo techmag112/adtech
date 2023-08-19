@@ -9,7 +9,7 @@ class Token {
 
     /**
     * @static generate() возвращает рандомно сгенерированный токен для встраивания в форму
-    * @return $string
+    * @return string
     */
     public static function generate() {
         return Session::put('token', md5(uniqid() . 'salt' . time()));

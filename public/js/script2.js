@@ -65,7 +65,7 @@ const makeGraf = (state, name1, name2) => {
       }
   
       function updateTextSummary() {
-          summaryGraf.textContent = 'Итого за период: переходы - '+ state.sum + ', доход - ' + state.total + ' руб';
+          summaryGraf.textContent = 'Итого за период: переходы - '+ state.sum + ', доход - ' + state.total.toFixed(2) + ' руб';
       }
   
       function getYearGrafFromDB() {
