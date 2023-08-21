@@ -1,4 +1,4 @@
-# [SF ArTech Система](..README.md)
+# [SF ArTech Система](../README.md)
 
 ## Панель веб мастера
 
