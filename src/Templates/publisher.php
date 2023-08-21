@@ -1,4 +1,6 @@
 <?php 
+    use Tm\Adtech\Core\Token;
+
     $this->layout('template', ['title' => 'Консоль заказчика']); 
 ?>
 
@@ -65,30 +67,31 @@
  
       <div class="layerAddOffer">
         <form>
-          <div class="mb-3">
+          <div class="mb-3 inputOffer">
             <label for="nameOffer" class="form-label">Название</label>
-            <input type="text" class="form-control inputOffer" id="nameOffer" aria-describedby="nameOffer" required />
+            <input type="text" class="form-control" id="nameOffer" aria-describedby="nameOffer" required />
             <div id="nameHelp" class="form-text">Введите короткое название оффера</div>
           </div>
-          <div class="mb-3">
+          <div class="mb-3 inputOffer">
             <label for="sumOffer" class="form-label">Стоимость перехода</label>
             <input type="text" pattern="(^[0-9]{0,4}$)|(^[0-9]{0,4}\.[0-9]{0,2}$)"
                     maxlength="7" validate="true"
-                    class="form-control inputOffer" id="sumOffer" required />
+                    class="form-control" id="sumOffer" required />
             <div id="sumHelp" class="form-text">Введите стоимость в формате "2.53"</div>
           </div>
-          <div class="mb-3">
+          <div class="mb-3 inputOffer">
             <label for="urlOffer" class="form-label">URL</label>
             <input type="text" pattern="(^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$)"
-                   validate="true" class="form-control inputOffer" id="urlOffer" required />
+                   validate="true" class="form-control" id="urlOffer" required />
             <div id="urlHelp" class="form-text">Введите url оффера без http/https</div>
           </div>
-          <div class="mb-3">
+          <div class="mb-3 inputOffer">
             <label for="keyOffer" class="form-label">Ключевые слова</label>
-            <input type="text" class="form-control inputOffer" id="keyOffer" aria-describedby="keyOffer" required />
+            <input type="text" class="form-control" id="keyOffer" aria-describedby="keyOffer" required />
             <div id="keyHelp" class="form-text">Введите ключевые слова через пробел</div>
           </div>
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <input type="hidden" name="token" class="form-control" id="token" value="<?php echo Token::generate(); ?>"> 
             <button type="reset" class="btn btn-primary" id="reset">Отмена</button>
             <button type="submit" class="btn btn-primary" id="addoffer">Добавить</button>
           </div>

@@ -5,6 +5,7 @@ namespace Tm\Adtech\Core;
 use PDO;
 use Delight\Auth\Auth;
 use Delight\Db\PdoDatabase;
+use Tm\Adtech\Core\Token;
 
 /**
  * Класс содержит все методы-запросы к базе для внешнего интерфейса
@@ -332,17 +333,21 @@ class DBQuery {
     */
     public function putOfferInDB() {
         $_POST = json_decode( file_get_contents("php://input"), true );
-        $this->db->insert(
-            'offers',
-            [
-                // set
-                "customer_id" => $this->auth->getUserId(),
-                "name" => $_POST["name"], 
-                "price" => $_POST["price"], 
-                "url" => $_POST["url"], 
-                "keywords" => $_POST["keywords"]
-            ]
-        );
+        if(Token::check($_POST["CSRF-token"])) {
+            $this->db->insert(
+                'offers',
+                [
+                    // set
+                    "customer_id" => $this->auth->getUserId(),
+                    "name" => $_POST["name"], 
+                    "price" => $_POST["price"], 
+                    "url" => $_POST["url"], 
+                    "keywords" => $_POST["keywords"]
+                ]
+            );
+        } else {
+            return false;
+        }
     }
 
 }

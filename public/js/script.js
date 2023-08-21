@@ -264,22 +264,20 @@ const renderOffers = (state) => {
         inputNameOffer.value = htmlspecialchars(str.slice(0,1).toUpperCase() + str.slice(1).toLowerCase());
         inputSumOffer.value = htmlspecialchars(inputSumOffer.value);
         str = inputUrlOffer.value;
-        //str = str.replace('https://', ''); 
-        //str = str.replace('http://', ''); 
-        //str = str.split('//')[1];
-        inputUrlOffer.value = htmlspecialchars(str.split('//')[1]);
+        inputUrlOffer.value = htmlspecialchars(str.replace(/^https?:\/\//, ''));
         str = inputKeyOffer.value;
         str = str.toLowerCase();
         str = str.replaceAll("(?U)[^\\p{L}\\p{N}\\s]+", "");
         inputKeyOffer.value = htmlspecialchars(str);
         if (inputNameOffer.value !='' && inputSumOffer.value != '' && inputUrlOffer.value != '' && inputKeyOffer.value != '') {
-            setOfferInDB(inputNameOffer.value, inputSumOffer.value, inputUrlOffer.value, inputKeyOffer.value);
+            setOfferInDB(inputNameOffer.value, inputSumOffer.value, inputUrlOffer.value, inputKeyOffer.value, document.querySelector('#token').value);
         } else {
             console.log('Форма оффера не заполнена!')
         }
     }
 
-    function setOfferInDB(nameOffer, sumOffer, urlOffer, keyOffer) {
+    function setOfferInDB(nameOffer, sumOffer, urlOffer, keyOffer, token) {
+        console.log(nameOffer, sumOffer, urlOffer, keyOffer, token);
         axios({
             method: 'post',
             url: '/post/putOfferInDB',
@@ -290,7 +288,8 @@ const renderOffers = (state) => {
                 "name": nameOffer,
                 "price": sumOffer,
                 "url": urlOffer,
-                "keywords": keyOffer
+                "keywords": keyOffer,
+                "CSRF-token": token
                 }
             })
             .then(() => {
@@ -298,7 +297,7 @@ const renderOffers = (state) => {
                  console.log('Таблица офферов обновлена.');
             })    
             .then(() => {
-                console.log('Оффер успешно обновлен.');
+               // console.log('Оффер успешно обновлен.');
                 closeOverlay();
             })
             .catch(function(error) {
