@@ -15,6 +15,10 @@ class Reflink {
     */
     private $db;
 
+    /**
+    * Метод конструктор класса
+    * В нем идет присвоение локальным переменным экземпляров классов из контейнера зависимостей (DI)
+    */
     public function __construct(PdoDatabase $db) {
         $this->db = $db;
     }

@@ -15,8 +15,17 @@ use Tm\Adtech\Core\Redirect;
 */
 class UserDataController { 
 
+    /**
+    * @var object $auth - экземпляр класса Delight\Auth\Auth (Авторизация)
+    * @var object $templates - экземпляр класса League\Plates\Engine (Шаблоны)
+    * @var object $db - экземпляр класса Delight\Db\PdoDatabase (обертка базы данных)
+    */
     private $auth, $templates, $db;
 
+    /**
+    * Метод конструктор класса
+    * В нем идет присвоение локальным переменным экземпляров классов из контейнера зависимостей (DI)
+    */
     function __construct(Engine $templates, PdoDatabase $db, Auth $auth) {
         $this->templates = $templates;
         $this->db = $db;

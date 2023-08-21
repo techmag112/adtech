@@ -14,6 +14,10 @@ class ErrorController {
     */
     private $templates;
 
+    /**
+    * Метод конструктор класса
+    * В нем идет присвоение локальным переменным экземпляров классов из контейнера зависимостей (DI)
+    */
     function __construct(Engine $templates) {
         $this->templates = $templates;
      }

@@ -17,6 +17,10 @@ class DBQuery {
     */
     private $auth, $db;
 
+    /**
+    * Метод конструктор класса
+    * В нем идет присвоение локальным переменным экземпляров классов из контейнера зависимостей (DI)
+    */
     public function __construct(PdoDatabase $db, Auth $auth) {
         $this->db = $db;
         $this->auth = $auth;

@@ -15,6 +15,10 @@ class ReferLinkController {
     */
     private $ref;
 
+    /**
+    * Метод конструктор класса
+    * В нем идет присвоение локальным переменным экземпляров классов из контейнера зависимостей (DI)
+    */
     function __construct(Reflink $ref) {
         $this->ref = $ref;
     }

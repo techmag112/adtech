@@ -25,8 +25,10 @@ class Router {
     */
     public static function run() {
 
-         $builder = new ContainerBuilder();
          /** Сбор всех зависимостей в контейнер */
+         /** Объявляем контейнер */
+         $builder = new ContainerBuilder();
+        /** Собираем к него зависимости - создаем экземпляр каждого класса зависимости со всеми настройками */
          $builder->addDefinitions([
              Engine::class => function() { 
                  return new Engine('../src/Templates');
@@ -52,7 +54,7 @@ class Router {
              }
 
         ]); 
-
+        /** Создаем экземпляр контейнера */
         $container = $builder->build();
        
         $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
@@ -112,7 +114,7 @@ class Router {
              case FastRoute\Dispatcher::FOUND:
                  $handler = $routeInfo[1];
                  $vars = $routeInfo[2];
-                
+                 
                  $container->call($handler, [$vars]);
                  break;
         }    

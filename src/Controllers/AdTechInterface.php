@@ -20,6 +20,10 @@ class AdTechInterface {
     */
     private $auth, $templates, $db;
 
+    /**
+    * Метод конструктор класса
+    * В нем идет присвоение локальным переменным экземпляров классов из контейнера зависимостей (DI)
+    */
     function __construct(Engine $templates, Auth $auth, DBQuery $db) {
         $this->templates = $templates;
         $this->auth = $auth;

@@ -21,6 +21,10 @@ class LoginController {
     */
     private $auth, $templates;
 
+    /**
+    * Метод конструктор класса
+    * В нем идет присвоение локальным переменным экземпляров классов из контейнера зависимостей (DI)
+    */
     function __construct(Engine $templates, Auth $auth) {
         $this->templates = $templates;
         $this->auth = $auth;

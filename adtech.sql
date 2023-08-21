@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3400
--- Время создания: Авг 18 2023 г., 20:41
+-- Время создания: Авг 21 2023 г., 09:09
 -- Версия сервера: 8.0.30
 -- Версия PHP: 8.1.9
 
@@ -83,7 +83,10 @@ INSERT INTO `links` (`id`, `time`, `master_id`, `offer_id`) VALUES
 (2, '2023-08-15 03:21:25', 3, 1),
 (3, '2023-08-15 03:21:25', 3, 1),
 (4, '2023-08-15 03:54:42', 3, 4),
-(5, '2023-08-17 19:22:34', 6, 3);
+(5, '2023-08-17 19:22:34', 6, 3),
+(6, '2023-08-19 17:12:54', 3, 3),
+(7, '2023-08-21 06:01:53', 3, 1),
+(8, '2023-08-21 06:01:56', 3, 4);
 
 -- --------------------------------------------------------
 
@@ -118,7 +121,23 @@ INSERT INTO `logs` (`id`, `time`, `master_id`, `customer_id`, `offer_id`, `statu
 (11, '2023-08-03 10:56:52', 3, 2, 2, 0),
 (12, '2023-08-15 16:57:42', 3, 2, 1, 1),
 (13, '2023-08-15 17:57:42', 3, 2, 1, 1),
-(14, '2023-08-18 08:22:28', 3, 2, 1, 1);
+(14, '2023-08-18 08:22:28', 3, 2, 1, 1),
+(15, '2023-08-19 10:14:45', 3, 2, 1, 1),
+(16, '2023-08-19 10:15:44', 3, 2, 1, 1),
+(17, '2023-08-19 10:37:47', 4, 0, 2, 0),
+(19, '2023-08-19 10:46:44', 3, 0, 100, 0),
+(20, '2023-08-19 11:52:42', 3, 0, 8, 0),
+(21, '2023-08-19 11:57:44', 3, 0, 100, 0),
+(22, '2023-08-19 15:44:21', 4, 0, 2, 0),
+(23, '2023-08-19 15:44:24', 4, 2, 3, 1),
+(24, '2023-08-19 15:44:29', 3, 2, 1, 1),
+(25, '2023-08-19 16:55:51', 4, 2, 3, 1),
+(26, '2023-08-19 16:56:01', 3, 2, 1, 1),
+(27, '2023-08-19 16:57:06', 4, 0, 2, 0),
+(28, '2023-08-19 16:57:11', 3, 0, 8, 0),
+(29, '2023-08-19 16:57:15', 3, 0, 100, 0),
+(30, '2023-08-19 17:16:09', 3, 0, 8, 0),
+(31, '2023-08-20 09:39:33', 3, 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -188,9 +207,9 @@ CREATE TABLE `offers` (
 --
 
 INSERT INTO `offers` (`id`, `customer_id`, `name`, `price`, `url`, `keywords`, `status`) VALUES
-(1, 2, 'Фитнес', 2.5, 'www.fitnes.ru', 'фитнес спорт зож', 1),
+(1, 2, 'Фитнес', 2.5, 'www.yandex.ru', 'фитнес спорт зож', 1),
 (2, 2, 'Магазин Корзинка', 1, 'www.korz.ru', 'продукты еда', 0),
-(3, 2, 'Кофе доставка', 1.2, 'www.coffe.ru', 'кофе еда', 1),
+(3, 2, 'Кофе доставка', 1.2, 'www.google.com', 'кофе еда', 1),
 (4, 2, 'Грузчики 24*7', 1.9, 'www.gruz555.com', 'груз доставка', 1),
 (5, 2, 'Гайка онлайн', 2.3, 'www.gaika.com', 'крепеж метиз', 0),
 (6, 2, 'Булко', 1.26, 'www.bul.co', 'еда', 0),
@@ -250,9 +269,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `username`, `status`, `verified`, `resettable`, `roles_mask`, `registered`, `last_login`, `force_logout`) VALUES
-(1, 'a@a.com', '$2y$10$8sRgjfPcsw6H6g7pxH.xlORaTurIBeWyEm77NRANNRBUmDaG.IQKS', 'Admin', 0, 1, 1, 1, 1690880372, 1692300111, 0),
-(2, 'b@b.com', '$2y$10$FAmpLDBzxOhaJ./3bfYgq.nnfUWDHpElo0YS5huAlgLVA6x2zAunS', 'Tetra', 0, 1, 1, 163856, 1690886471, 1692300176, 0),
-(3, 'c@c.com', '$2y$10$OUYoazgFxR6GQwUomN9Cqeq5gF8h.sQ5I6c7cJxXq.aj5uYiqqRRS', 'Alfa', 0, 1, 1, 131090, 1690891278, 1692038697, 0),
+(1, 'a@a.com', '$2y$10$8sRgjfPcsw6H6g7pxH.xlORaTurIBeWyEm77NRANNRBUmDaG.IQKS', 'Admin', 0, 1, 1, 1, 1690880372, 1692595186, 0),
+(2, 'b@b.com', '$2y$10$FAmpLDBzxOhaJ./3bfYgq.nnfUWDHpElo0YS5huAlgLVA6x2zAunS', 'Tetra', 0, 1, 1, 163856, 1690886471, 1692595250, 0),
+(3, 'c@c.com', '$2y$10$OUYoazgFxR6GQwUomN9Cqeq5gF8h.sQ5I6c7cJxXq.aj5uYiqqRRS', 'Alfa', 0, 1, 1, 131090, 1690891278, 1692597636, 0),
 (4, 'd@d.com', '$2y$10$BC4.V0Si3sdgL6/5aOGsqOWVc/kWji6pttSf3M9J6oq5L15tpqfOG', 'Nan', 0, 1, 1, 131090, 1691300702, 1692299193, 0),
 (5, 'q@a.com', '$2y$10$0bzGOkz3pR8.PA/7hlBEBOCh8rqJnywoytxtH5boGiu8glvlzHr2.', 'Qiqi', 0, 1, 1, 0, 1691317424, 1692335771, 0),
 (6, 'e@e.com', '$2y$10$yfpDyf1e7UhqR9A92bhi9O2kxbwwRWODSYLUm/9VC0mpTRLWX5mfa', 'Nike', 0, 1, 1, 131090, 1692299349, 1692300144, 0);
@@ -318,7 +337,7 @@ CREATE TABLE `users_throttling` (
 --
 
 INSERT INTO `users_throttling` (`bucket`, `tokens`, `replenished_at`, `expires_at`) VALUES
-('QduM75nGblH2CDKFyk0QeukPOwuEVDAUFE54ITnHM38', 74, 1692335771, 1692875771),
+('QduM75nGblH2CDKFyk0QeukPOwuEVDAUFE54ITnHM38', 72.6806, 1692597636, 1693137636),
 ('PZ3qJtO_NLbJfRIP-8b4ME4WA3xxc6n9nbCORSffyQ0', 4, 1692299349, 1692731349),
 ('OMhkmdh1HUEdNPRi-Pe4279tbL5SQ-WMYf551VVvH8U', 19, 1692258486, 1692294486),
 ('2oeo8WJMkKMNsGkf4DTpiq5kjSC_OKBGW6eYi-5wxjw', 499, 1692078514, 1692251314),
@@ -372,6 +391,8 @@ ALTER TABLE `links`
 -- Индексы таблицы `logs`
 --
 ALTER TABLE `logs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id_2` (`id`),
   ADD KEY `id` (`id`);
 
 --
@@ -445,13 +466,13 @@ ALTER TABLE `year`
 -- AUTO_INCREMENT для таблицы `links`
 --
 ALTER TABLE `links`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT для таблицы `offers`
