@@ -31,6 +31,9 @@
                         <label for="username" class="form-label">Новое имя пользователя?</label>
                         <input type="text" name="username" class="form-control" value="<?php echo $username ?>">
                     </div>
+                    <div class="row mb-3">
+                        <input type="hidden" name="token" class="form-control" value="<?php echo Token::generate(); ?>"> 
+                    </div>
                     <div class="">
                         <input
                         type="submit"

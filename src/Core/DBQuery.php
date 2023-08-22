@@ -28,66 +28,42 @@ class DBQuery {
     }
 
     /**
-    * countLinksYear() возвращает количество выданных ссылок за последний год
+    * countLinksYear() возвращает количество выданных ссылок и количество отказов в переходах за последний год
     * @return string json
     */
-    public function countLinksYear() {
-        $value = $this->db->selectValue(
+    public function countLinksAndRejectYear() {
+        $value[0] = $this->db->selectValue(
             'SELECT count(master_id) FROM links WHERE YEAR(time) = YEAR(CURDATE());'
         );
-        echo json_encode($value);
-    }
-
-    /**
-    * countRejectYear() возвращает количество отказов в переходах за последний год
-    * @return string json
-    */
-    public function countRejectYear() {
-        $value = $this->db->selectValue(
+        $value[1] = $this->db->selectValue(
             'SELECT count(status) FROM logs WHERE YEAR(time) = YEAR(CURDATE()) AND status = 0;'
         );
         echo json_encode($value);
     }
 
     /**
-    * countLinksMonth() возвращает количество выданных ссылок за последний месяц
+    * countLinksMonth() возвращает количество выданных ссылок и количество отказов в переходах за последний месяц
     * @return string json
     */
-    public function countLinksMonth() {
-        $value = $this->db->selectValue(
+    public function countLinksAndRejectMonth() {
+        $value[0] = $this->db->selectValue(
             'SELECT count(master_id) FROM links WHERE MONTH(time) = MONTH(CURDATE()) AND YEAR(time) = YEAR(CURDATE());'
         );
-        echo json_encode($value);
-    }
-
-    /**
-    * countRejectMonth() возвращает количество отказов в переходах за последний месяц
-    * @return string json
-    */
-    public function countRejectMonth() {
-        $value = $this->db->selectValue(
+        $value[1] = $this->db->selectValue(
             'SELECT count(status) FROM logs WHERE MONTH(time) = MONTH(CURDATE()) AND YEAR(time) = YEAR(CURDATE()) AND status = 0;'
         );
         echo json_encode($value);
     }
 
     /**
-    * countLinksDay() возвращает количество выданных ссылок за последний день
+    * countLinksDay() возвращает количество выданных ссылок и количество отказов в переходах за последний день
     * @return string json
     */
-    public function countLinksDay() {
-        $value = $this->db->selectValue(
+    public function countLinksAndRejectDay() {
+        $value[0] = $this->db->selectValue(
             'SELECT count(master_id) FROM links WHERE DAY(time) = DAY(CURDATE()) AND MONTH(time) = MONTH(CURDATE()) AND YEAR(time) = YEAR(CURDATE());'
         );
-        echo json_encode($value);
-    }
-
-    /**
-    * countRejectDay() возвращает количество отказов в переходах за последний день
-    * @return string json
-    */
-    public function countRejectDay() {
-        $value = $this->db->selectValue(
+        $value[1] = $this->db->selectValue(
             'SELECT count(status) FROM logs WHERE DAY(time) = DAY(CURDATE()) AND MONTH(time) = MONTH(CURDATE()) AND YEAR(time) = YEAR(CURDATE()) AND status = 0;'
         );
         echo json_encode($value);

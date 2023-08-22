@@ -67,60 +67,42 @@ const makeGraf = (state, name1, name2) => {
         summaryGraf.textContent = 'Итого за период: доходы - ' + state.total.toFixed(2) + ' руб, переходы - '+ state.sum + ', отказы - ' + state.reject + ', выданные ссылки - ' + state.links ;
     }
 
-    function getCountLinksYear() {
-        axios.get('/get/countLinksYear').then(res => {
-            state.links = res.data;
-            console.log(state.links);
+    function countLinksAndRejectYear() {
+        axios.get('/get/countLinksAndRejectYear').then(res => {
+            state.links = res.data[0];
+            state.reject = res.data[1];
+            console.log(state.links, state.reject);
+        })
+        .then(() => {
+            updateTextSummary();
         })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
          });
     }
 
-    function getRejectYear() {
-        axios.get('/get/countRejectYear').then(res => {
-            state.reject = res.data;
-            console.log(state.reject);
+    function getCountLinksAndRejectMonth() {
+        axios.get('/get/countLinksAndRejectMonth').then(res => {
+            state.links = res.data[0];
+            state.reject = res.data[1];
+            console.log(state.links, state.reject);
+        })
+        .then(() => {
+            updateTextSummary();
         })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
          });
     }
 
-    function getCountLinksMonth() {
-        axios.get('/get/countLinksMonth').then(res => {
-            state.links = res.data;
-            console.log(state.links);
+    function getCountLinksAndRejectDay() {
+        axios.get('/get/countLinksAndRejectDay').then(res => {
+            state.links = res.data[0];
+            state.reject = res.data[1];
+            console.log(state.links, state.reject);
         })
-            .catch(function(error) {
-            console.log("Ошибка базы данных " + error);
-         });
-    }
-
-    function getRejectMonth() {
-        axios.get('/get/countRejectMonth').then(res => {
-            state.reject = res.data;
-            console.log(state.reject);
-        })
-            .catch(function(error) {
-            console.log("Ошибка базы данных " + error);
-         });
-    }
-
-    function getCountLinksDay() {
-        axios.get('/get/countLinksDay').then(res => {
-            state.links = res.data;
-            console.log(state.links);
-        })
-            .catch(function(error) {
-            console.log("Ошибка базы данных " + error);
-         });
-    }
-
-    function getRejectDay() {
-        axios.get('/get/countRejectDay').then(res => {
-            state.reject = res.data;
-            console.log(state.reject);
+        .then(() => {
+            updateTextSummary();
         })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
@@ -132,8 +114,7 @@ const makeGraf = (state, name1, name2) => {
         state.total = 0;
         state.reject = 0;
         state.links = 0;
-        getCountLinksYear();
-        getRejectYear();
+        countLinksAndRejectYear();
         axios.get('/get/getYearGrafAdmin').then(res => {
                 state.yearData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
@@ -160,8 +141,7 @@ const makeGraf = (state, name1, name2) => {
         state.total = 0;
         state.reject = 0;
         state.links = 0;
-        getCountLinksMonth();
-        getRejectMonth();
+        getCountLinksAndRejectMonth();
         axios.get('/get/getMonthGrafAdmin').then(res => {
                 state.monthData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
@@ -188,8 +168,7 @@ const makeGraf = (state, name1, name2) => {
         state.total = 0;
         state.reject = 0;
         state.links = 0;
-        getCountLinksDay();
-        getRejectDay();
+        getCountLinksAndRejectDay();
         axios.get('/get/getDayGrafAdmin').then(res => {
                 state.dayData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
