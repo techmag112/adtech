@@ -82,9 +82,6 @@ const makeGraf = (state, name1, name2) => {
             state.reject = res.data;
             console.log(state.reject);
         })
-        .then(() => {
-            updateTextSummary();
-        })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
          });
@@ -104,9 +101,6 @@ const makeGraf = (state, name1, name2) => {
         axios.get('/get/countRejectMonth').then(res => {
             state.reject = res.data;
             console.log(state.reject);
-        })
-        .then(() => {
-            updateTextSummary();
         })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
@@ -128,9 +122,6 @@ const makeGraf = (state, name1, name2) => {
             state.reject = res.data;
             console.log(state.reject);
         })
-        .then(() => {
-            updateTextSummary();
-        })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
          });
@@ -139,6 +130,10 @@ const makeGraf = (state, name1, name2) => {
     function getYearGrafFromDB() {
         state.sum = 0;
         state.total = 0;
+        state.reject = 0;
+        state.links = 0;
+        getCountLinksYear();
+        getRejectYear();
         axios.get('/get/getYearGrafAdmin').then(res => {
                 state.yearData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
@@ -151,12 +146,9 @@ const makeGraf = (state, name1, name2) => {
                 console.log('state.yearData1', state.yearData1);
                 console.log('state.yearData2', state.yearData2);
             }) .then(() => {
-                getCountLinksYear();
-                getRejectYear();
-            }) .then(() => {
                 console.log('Загрузка графика выполнена!');
-               // updateTextSummary();
                 yearGraf();
+                updateTextSummary();
             })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
@@ -166,6 +158,10 @@ const makeGraf = (state, name1, name2) => {
     function getMonthGrafFromDB() {
         state.sum = 0;
         state.total = 0;
+        state.reject = 0;
+        state.links = 0;
+        getCountLinksMonth();
+        getRejectMonth();
         axios.get('/get/getMonthGrafAdmin').then(res => {
                 state.monthData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
@@ -178,12 +174,9 @@ const makeGraf = (state, name1, name2) => {
                 console.log('state.monthData1', state.monthData1);
                 console.log('state.monthData2', state.monthData2);
             }) .then(() => {
-                getCountLinksMonth();
-                getRejectMonth();
-            }) .then(() => {
                 console.log('Загрузка графика выполнена!');
-                // updateTextSummary();
                 monthGraf();
+                updateTextSummary();
             })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
@@ -193,6 +186,10 @@ const makeGraf = (state, name1, name2) => {
     function getDayGrafFromDB() {
         state.sum = 0;
         state.total = 0;
+        state.reject = 0;
+        state.links = 0;
+        getCountLinksDay();
+        getRejectDay();
         axios.get('/get/getDayGrafAdmin').then(res => {
                 state.dayData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
@@ -205,12 +202,9 @@ const makeGraf = (state, name1, name2) => {
                 console.log('state.dayData1', state.dayData1);
                 console.log('state.dayData2', state.dayData2);
             }) .then(() => {
-                getCountLinksDay();
-                getRejectDay();
-            }) .then(() => {
                 console.log('Загрузка графика выполнена!');
-                // updateTextSummary();
                 dayGraf();
+                updateTextSummary();
             })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);

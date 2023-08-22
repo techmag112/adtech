@@ -277,7 +277,6 @@ const renderOffers = (state) => {
     }
 
     function setOfferInDB(nameOffer, sumOffer, urlOffer, keyOffer, token) {
-        console.log(nameOffer, sumOffer, urlOffer, keyOffer, token);
         axios({
             method: 'post',
             url: '/post/putOfferInDB',
@@ -297,7 +296,6 @@ const renderOffers = (state) => {
                  console.log('Таблица офферов обновлена.');
             })    
             .then(() => {
-               // console.log('Оффер успешно обновлен.');
                 closeOverlay();
             })
             .catch(function(error) {

@@ -36,11 +36,15 @@ class Router {
 
              PDO::class => function() {
                  $driver = "mysql";
-                 $host = "localhost";
-                 $port = 3400;
+                 //$host = "localhost";
+                 //$port = 3400;
+                 //$username = "root";
+                 //$password = "";
+                 $host = "db";
+                 $port = 3306;
+                 $username = "admin";
+                 $password = "12345";
                  $database_name = "adtech";
-                 $username = "root";
-                 $password = "";
                  $mypdo = new PDO("$driver:host=$host:$port;dbname=$database_name", $username, $password);
                  return $mypdo;
              },
