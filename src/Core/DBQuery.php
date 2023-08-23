@@ -28,7 +28,7 @@ class DBQuery {
     }
 
     /**
-    * countLinksYear() возвращает количество выданных ссылок и количество отказов в переходах за последний год
+    * countLinksAndRejectYear() возвращает количество выданных ссылок и количество отказов в переходах за последний год
     * @return string json
     */
     public function countLinksAndRejectYear() {
@@ -42,7 +42,7 @@ class DBQuery {
     }
 
     /**
-    * countLinksMonth() возвращает количество выданных ссылок и количество отказов в переходах за последний месяц
+    * countLinksAndRejectMonth() возвращает количество выданных ссылок и количество отказов в переходах за последний месяц
     * @return string json
     */
     public function countLinksAndRejectMonth() {
@@ -56,7 +56,7 @@ class DBQuery {
     }
 
     /**
-    * countLinksDay() возвращает количество выданных ссылок и количество отказов в переходах за последний день
+    * countLinksAndRejectDay() возвращает количество выданных ссылок и количество отказов в переходах за последний день
     * @return string json
     */
     public function countLinksAndRejectDay() {

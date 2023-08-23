@@ -215,7 +215,6 @@ const renderOffers = (state) => {
     
     const btnReset = document.querySelector("#reset");
     let shadowOverlay;
-    let codeURL = '';
 
     setHandler();
     offerTableListener();
@@ -306,6 +305,8 @@ const renderOffers = (state) => {
     }
 
     function getReferalURL(id) {
+        let codeURL = `<h3>Идет генерация реферальной ссылки...</h3>`;
+        document.querySelector('#insertCode').innerHTML = codeURL;
         axios({
             method: 'post',
             url: '/post/getCurrentOrder',

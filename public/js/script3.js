@@ -67,7 +67,7 @@ const makeGraf = (state, name1, name2) => {
         summaryGraf.textContent = 'Итого за период: доходы - ' + state.total.toFixed(2) + ' руб, переходы - '+ state.sum + ', отказы - ' + state.reject + ', выданные ссылки - ' + state.links ;
     }
 
-    function countLinksAndRejectYear() {
+    function getCountLinksAndRejectYear() {
         axios.get('/get/countLinksAndRejectYear').then(res => {
             state.links = res.data[0];
             state.reject = res.data[1];
@@ -114,7 +114,7 @@ const makeGraf = (state, name1, name2) => {
         state.total = 0;
         state.reject = 0;
         state.links = 0;
-        countLinksAndRejectYear();
+        getCountLinksAndRejectYear();
         axios.get('/get/getYearGrafAdmin').then(res => {
                 state.yearData1 = res.data.map(item => {
                     state.total += Number(item['total']);    
