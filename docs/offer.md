@@ -1,4 +1,4 @@
-# [SF ArTech Система](../README.md)
+# [SF AdTech Система](../README.md)
 
 ## Панель заказчика
 
