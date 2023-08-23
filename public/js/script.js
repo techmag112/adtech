@@ -230,7 +230,7 @@ const renderOffers = (state) => {
         filterSelect.addEventListener( "click", function(e) {
             if (!filterSelectOn) { 
                 filterSelectOn = true;
-                renderTableOffers(state.offerList.filter(arr => arr['status'] == 1));  
+                renderTableOffers(state.offerList.filter(e => e.status == 1));  
             }
         });    
         btnAdd.addEventListener( "click", initOverlay);    
@@ -259,24 +259,32 @@ const renderOffers = (state) => {
         const inputSumOffer = document.querySelector('#sumOffer');
         const inputUrlOffer = document.querySelector('#urlOffer');
         const inputKeyOffer = document.querySelector('#keyOffer');
-        let str;
-        str = inputNameOffer.value;
-        inputNameOffer.value = htmlspecialchars(str.slice(0,1).toUpperCase() + str.slice(1).toLowerCase());
-        inputSumOffer.value = htmlspecialchars(inputSumOffer.value);
-        str = inputUrlOffer.value;
-        inputUrlOffer.value = htmlspecialchars(str.replace(/^https?:\/\//, ''));
-        str = inputKeyOffer.value;
-        str = str.toLowerCase();
-        str = str.replaceAll("(?U)[^\\p{L}\\p{N}\\s]+", "");
-        inputKeyOffer.value = htmlspecialchars(str);
-        if (inputNameOffer.value !='' && inputSumOffer.value != '' && inputUrlOffer.value != '' && inputKeyOffer.value != '') {
-            setOfferInDB(inputNameOffer.value, inputSumOffer.value, inputUrlOffer.value, inputKeyOffer.value, document.querySelector('#token').value);
+        if (!inputNameOffer.checkValidity() || !inputSumOffer.checkValidity() || !inputUrlOffer.checkValidity() || !inputKeyOffer.checkValidity()) {
+            console.log('Ошибка валидации!') 
         } else {
-            console.log('Форма оффера не заполнена!')
+            let str;
+            str = inputNameOffer.value;
+            inputNameOffer.value = htmlspecialchars(str.slice(0,1).toUpperCase() + str.slice(1).toLowerCase());
+            inputSumOffer.value = htmlspecialchars(inputSumOffer.value);
+            str = inputUrlOffer.value;
+            inputUrlOffer.value = htmlspecialchars(str.replace(/^https?:\/\//, ''));
+            str = inputKeyOffer.value;
+            str = str.toLowerCase();
+            str = str.replaceAll("(?U)[^\\p{L}\\p{N}\\s]+", "");
+            inputKeyOffer.value = htmlspecialchars(str);
+            if (inputNameOffer.value !='' && inputSumOffer.value != '' && inputUrlOffer.value != '' && inputKeyOffer.value != '') {
+                setOfferInDB(inputNameOffer.value, inputSumOffer.value, inputUrlOffer.value, inputKeyOffer.value); //, document.querySelector('#token').value);
+                inputNameOffer.value = ''; 
+                inputSumOffer.value = ''; 
+                inputUrlOffer.value = ''; 
+                inputKeyOffer.value = ''; 
+            } else {
+                console.log('Форма оффера не заполнена!')
+            }
         }
     }
 
-    function setOfferInDB(nameOffer, sumOffer, urlOffer, keyOffer, token) {
+    function setOfferInDB(nameOffer, sumOffer, urlOffer, keyOffer) { //, token) {
         axios({
             method: 'post',
             url: '/post/putOfferInDB',
@@ -287,8 +295,8 @@ const renderOffers = (state) => {
                 "name": nameOffer,
                 "price": sumOffer,
                 "url": urlOffer,
-                "keywords": keyOffer,
-                "CSRF-token": token
+                "keywords": keyOffer
+                //"CSRF-token": token
                 }
             })
             .then(() => {
@@ -306,10 +314,15 @@ const renderOffers = (state) => {
     function getOffersFromDB() {
         axios.get('/get/getOfferList').then(res => {
                 state.offerList = res.data;
+                if ((filterSelectOn)) { 
+                    renderTableOffers(state.offerList.filter(e => e.status == 1));  
+                } else {
+                    renderTableOffers(state.offerList);
+                }
                 console.log('state.offerList', state.offerList);
             }) .then(() => {
                 console.log('Загрузка данных выполнена!');
-                renderOffers(state);
+                //renderOffers(state); **********
             })
             .catch(function(error) {
             console.log("Ошибка базы данных " + error);
@@ -318,7 +331,7 @@ const renderOffers = (state) => {
 
     function renderTableOffers(arr=state.offerList) {
         divTable.innerHTML = '';
-        if (arr.length != 0) {
+        if (!!arr.length) {
             arr.forEach(offer => {
                 let classTable = offer['status'] ? 'table-success' : 'table-danger';
                 divTable.innerHTML += `
@@ -339,10 +352,10 @@ const renderOffers = (state) => {
                 arr.status = status;
             }
         });
-        setStatusOfferInDB(id, status);
-        if ((filterSelectOn) && (!status)) { 
-            renderOffers(state.offerList.filter(arr => arr['status'] == 1));  
+        if ((filterSelectOn) && (status == 0)) { 
+            renderTableOffers(state.offerList.filter(e => e.status == 1));  
         }
+        setStatusOfferInDB(id, status);
     }
 
     function setStatusOfferInDB(id, status) {
@@ -380,7 +393,9 @@ const renderOffers = (state) => {
 
     function offerTableListener() {
         divTable.addEventListener( "click", function(e) {
-          toggleClassTable(getIdOnClick(e), "Вы действительно хотите деактивировать оффер?");
+          e.preventDefault();
+          const id = getIdOnClick(e);
+          toggleClassTable(id, "Вы действительно хотите деактивировать оффер?");
         });     
     }
   
@@ -401,13 +416,13 @@ const renderOffers = (state) => {
         }
     }
 
-    function listener1(e) {
+    const listener1 = (e) => {
         if (e.target.classList.contains('overlay__shadow')) {
             closeOverlay();
         }
       }
 
-    function listener2(e) {
+    const listener2 = (e) => {
         if (e.key === 'Escape') {
             closeOverlay();
         }
@@ -428,8 +443,8 @@ const renderOffers = (state) => {
             window.removeEventListener('keydown', listener2, false);
             shadowOverlay.classList.remove('overlay__shadow--show');
             shadowOverlay.classList.remove('overlay__shadow');
-            mainContainer.removeChild(shadowOverlay);
             windowAddOffer.classList.remove('active');
+            mainContainer.removeChild(shadowOverlay);
       }
     
 

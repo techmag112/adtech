@@ -282,15 +282,6 @@ class DBQuery {
     public function setStatusSubcrInDB() {
         $_POST = json_decode( file_get_contents("php://input"), true );
         if ($_POST["status"] === 1) {
-            $this->db->delete(
-                'orders',
-                [
-                    // where
-                    'master_id' => $this->auth->getUserId(),
-                    'offer_id' => $_POST["id"]
-                ]
-            );
-        } else {
             $this->db->insert(
                 'orders',
                 [
@@ -298,6 +289,15 @@ class DBQuery {
                     'master_id' => $this->auth->getUserId(),
                     'offer_id' => $_POST["id"],
                     'status' => 1,
+                ]
+            );
+        } else {
+            $this->db->delete(
+                'orders',
+                [
+                    // where
+                    'master_id' => $this->auth->getUserId(),
+                    'offer_id' => $_POST["id"]
                 ]
             );
         } 
@@ -309,7 +309,7 @@ class DBQuery {
     */
     public function putOfferInDB() {
         $_POST = json_decode( file_get_contents("php://input"), true );
-        if(Token::check($_POST["CSRF-token"])) {
+        //if(Token::check($_POST["CSRF-token"])) {
             $this->db->insert(
                 'offers',
                 [
@@ -321,9 +321,9 @@ class DBQuery {
                     "keywords" => $_POST["keywords"]
                 ]
             );
-        } else {
-            return false;
-        }
+        //} else {
+        //    return false;
+        //}
     }
 
 }

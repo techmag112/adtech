@@ -234,7 +234,7 @@ const renderOffers = (state) => {
         filterSelect.addEventListener( "click", function(e) {
             if (!filterSelectOn) { 
                 filterSelectOn = true;
-                renderTableOffers(state.offerList.filter(arr => arr['status'] == 1));  
+                renderTableOffers(state.offerList.filter(e => e.status == 1));  
             }
         });    
         btnReset.addEventListener( "click", closeOverlay);    
@@ -261,13 +261,13 @@ const renderOffers = (state) => {
     function setStatusOffer(id, status) {
         state.offerList.forEach(arr => {
             if (arr.id == id) {
-                setStatusSubcrInDB(id, arr.status);
                 arr.status = status;
             }
         });
-        if ((filterSelectOn) && (!status)) { 
-            renderOffers(state.offerList.filter(arr => arr['status'] == 1));  
+        if ((filterSelectOn)) { // && ((status == 0) || (status == null))) { 
+            renderTableOffers(state.offerList.filter(e => e.status == 1));  
         }
+        setStatusSubcrInDB(id, status);
     }
 
     function setStatusSubcrInDB(id, old_status) {

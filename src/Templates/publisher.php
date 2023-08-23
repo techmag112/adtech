@@ -91,7 +91,6 @@
             <div id="keyHelp" class="form-text">Введите ключевые слова через пробел</div>
           </div>
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <input type="hidden" name="token" class="form-control" id="token" value="<?php echo Token::generate(); ?>"> 
             <button type="reset" class="btn btn-primary" id="reset">Отмена</button>
             <button type="submit" class="btn btn-primary" id="addoffer">Добавить</button>
           </div>

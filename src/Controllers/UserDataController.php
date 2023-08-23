@@ -124,6 +124,7 @@ class UserDataController {
                                         $this->auth->getUserId()
                                     ]
                                 );
+                                $_SESSION[\Delight\Auth\UserManager::SESSION_FIELD_USERNAME] = $username;
                                 Redirect::to('/', 'Изменение успешно принято.');
                         } else {
                             $message = 'Данное имя пользователя уже существует';

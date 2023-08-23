@@ -285,6 +285,7 @@ const renderUsers = (state) => {
     }
  
     function getUsersFromDB() {
+        filterSelectOn = false;
         axios.get('/get/getUserList').then(res => {
             state.userList = res.data;
             console.log('state.userList', state.userList);
