@@ -26,7 +26,7 @@ RUN composer install \
     --prefer-dist
 ## Copy Composer dependencies
 WORKDIR /var/www/html
-COPY . .
+# COPY . .
 RUN composer dump-autoload --optimize
 
 
